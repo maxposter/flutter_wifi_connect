@@ -14,18 +14,23 @@ public class SwiftFlutterWifiConnectPlugin: NSObject, FlutterPlugin {
     do {
       switch (call.method) {
         case "disconnect":
-          result(disconnect())
-          return
+            if #available(iOS 11, *) {
+                result(disconnect())
+            }
+            return
+      
 
         case "getSSID":
           result(getSSID())
           return
 
         case "connect":
+            if #available(iOS 11, *) {
           let args = try GetArgs(arguments: call.arguments)
           let hotspotConfig = NEHotspotConfiguration.init(ssid: args["ssid"] as! String)
           hotspotConfig.joinOnce = !(args["saveNetwork"] as! Bool);
           connect(hotspotConfig: hotspotConfig, result: result)
+            }
           return
 
         case "prefixConnect":
@@ -40,10 +45,12 @@ public class SwiftFlutterWifiConnectPlugin: NSObject, FlutterPlugin {
           return
 
         case "secureConnect":
+            if #available(iOS 11, *) {
           let args = try GetArgs(arguments: call.arguments)
           let hotspotConfig = NEHotspotConfiguration.init(ssid: args["ssid"] as! String, passphrase: args["password"] as! String, isWEP: args["isWep"] as! Bool)
           hotspotConfig.joinOnce = !(args["saveNetwork"] as! Bool);
           connect(hotspotConfig: hotspotConfig, result: result)
+            }
           return
 
         case "securePrefixConnect":
